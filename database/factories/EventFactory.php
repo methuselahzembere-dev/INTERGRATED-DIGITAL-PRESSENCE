@@ -11,13 +11,33 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class EventFactory extends Factory
 {
+    private const TITLES = [
+        'Monthly General Meeting',
+        'Membership Drive',
+        'Community Outreach Day',
+        'Leadership Training Workshop',
+        'Youth Engagement Forum',
+        'Annual Conference',
+        'Strategy Planning Session',
+        'Volunteer Orientation',
+    ];
+
+    private const VENUES = [
+        'Harare International Conference Centre',
+        'Bulawayo City Hall',
+        'Mutare Civic Centre',
+        'Gweru Showgrounds',
+        'Masvingo Community Hall',
+        'Chinhoyi Town Hall',
+    ];
+
     public function definition(): array
     {
         return [
             'affiliate_id' => Affiliate::factory(),
-            'title' => fake()->sentence(4),
-            'description' => fake()->paragraph(),
-            'venue' => fake()->city().' Community Hall',
+            'title' => fake()->randomElement(self::TITLES),
+            'description' => 'All members are encouraged to attend. Please arrive 30 minutes early and bring your membership details. Further information will be shared by your affiliate leadership.',
+            'venue' => fake()->randomElement(self::VENUES),
             'starts_at' => now()->addDays(fake()->numberBetween(3, 60))->setTime(10, 0),
             'published_at' => now()->subDay(),
         ];

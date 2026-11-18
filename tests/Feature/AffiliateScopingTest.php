@@ -161,7 +161,10 @@ class AffiliateScopingTest extends TestCase
             ['affiliate_admin', $this->a],
             ['affiliate_user', $this->a],
         ] as [$role, $affiliate]) {
-            $this->actingAs($this->member($role, $affiliate))->get('/admin')->assertOk();
+            $this->actingAs($this->member($role, $affiliate))->get('/admin')
+                ->assertOk()
+                ->assertSee(config('branding.logo'), false)
+                ->assertSee(config('branding.motto'), false);
         }
     }
 

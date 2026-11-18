@@ -22,10 +22,23 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    private const FIRST_NAMES = [
+        'Tendai', 'Farai', 'Tatenda', 'Rudo', 'Chipo', 'Tafadzwa', 'Nyasha', 'Blessing', 'Kudzai', 'Rumbidzai',
+        'Tinashe', 'Memory', 'Simbarashe', 'Shamiso', 'Takudzwa', 'Vimbai', 'Munashe', 'Ruvimbo', 'Panashe', 'Tsitsi',
+        'Sipho', 'Nomsa', 'Thabo', 'Bongani', 'Thandiwe', 'Ndumiso', 'Nkosana', 'Sibusiso', 'Lindiwe', 'Themba',
+        'Nobuhle', 'Mthulisi', 'Zodwa', 'Busisiwe', 'Khumbulani',
+    ];
+
+    private const SURNAMES = [
+        'Moyo', 'Ncube', 'Sibanda', 'Dube', 'Ndlovu', 'Nkomo', 'Mpofu', 'Khumalo', 'Moyo', 'Tshuma',
+        'Chikwanha', 'Moyo', 'Mutasa', 'Chigumba', 'Makoni', 'Mandaza', 'Chinamasa', 'Mukanya', 'Gumbo', 'Zvobgo',
+        'Mapfumo', 'Chimbira', 'Chitsiga', 'Marufu', 'Mashingaidze', 'Nyathi', 'Maphosa', 'Mahlangu', 'Hove', 'Mavhunga',
+    ];
+
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'name' => fake()->randomElement(self::FIRST_NAMES).' '.fake()->randomElement(self::SURNAMES),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
