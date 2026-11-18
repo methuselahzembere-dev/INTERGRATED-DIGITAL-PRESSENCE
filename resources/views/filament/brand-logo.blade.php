@@ -1,7 +1,11 @@
-<div style="display:flex;align-items:center;gap:0.6rem;">
-    <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('branding.party_name') }} logo" style="height:2.5rem;width:auto;">
-    <span style="font-weight:700;font-size:1.05rem;line-height:1.1;">
-        {{ config('branding.party_name') }}
-        <span style="display:block;font-weight:400;font-size:0.7rem;opacity:0.7;">Integrated Digital Presence</span>
+{{-- Circular emblem + party name. Sidebar: compact. Login (.fi-simple-layout): large, stacked, with the motto. See brand-head.blade.php for the styles. --}}
+<div class="zp-brand">
+    <span class="zp-seal">
+        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('branding.party_name') }} emblem">
+    </span>
+    <span class="zp-brand-text">
+        <span class="zp-brand-name">{{ config('branding.party_name') }}</span>
+        <span class="zp-brand-sub">Integrated Digital Presence</span>
+        <span class="zp-brand-motto">{{ config('branding.motto') }}</span>
     </span>
 </div>

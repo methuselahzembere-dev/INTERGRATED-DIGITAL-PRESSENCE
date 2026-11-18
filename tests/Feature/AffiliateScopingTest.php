@@ -168,6 +168,24 @@ class AffiliateScopingTest extends TestCase
         }
     }
 
+    public function test_login_page_shows_circular_logo_and_unquoted_motto(): void
+    {
+        $this->get('/admin/login')
+            ->assertOk()
+            ->assertSee(config('branding.logo'), false)
+            ->assertSee('zp-seal', false)
+            ->assertSee(config('branding.motto'), false);
+    }
+
+    public function test_dashboard_motto_has_no_quotation_marks(): void
+    {
+        $html = $this->actingAs($this->member('national_admin'))->get('/admin')->assertOk()->getContent();
+
+        $this->assertStringContainsString('<span class="zp-motto">'.config('branding.motto').'</span>', $html);
+        $this->assertStringNotContainsString('“', $html);
+        $this->assertStringNotContainsString('&ldquo;', $html);
+    }
+
     public function test_every_role_can_open_the_panel_but_plain_accounts_cannot(): void
     {
         foreach (['national_admin', 'national_user'] as $role) {

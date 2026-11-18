@@ -12,6 +12,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -34,9 +35,12 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')
             ->brandName(config('branding.party_name').' Integrated Digital Presence')
             ->brandLogo(fn () => view('filament.brand-logo'))
+            ->brandLogoHeight('auto')
+            ->topbar(false) // logo, bell and profile menu live in the left side menu
+            ->renderHook(PanelsRenderHook::HEAD_END, fn () => view('filament.brand-head'))
             ->favicon(asset(config('branding.logo')))
             ->colors([
-                'primary' => Color::Green,
+                'primary' => Color::hex('#12a53b'), // the green of the party flag band
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
