@@ -1,0 +1,9 @@
+/.agents
+/.claude
+/vendor
+/node_modules
+/storage
+/public
+/bootstrap
+/graphify-out
+/INTERGRATED-DIGITAL-PRESENCE
