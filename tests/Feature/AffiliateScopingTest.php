@@ -186,6 +186,32 @@ class AffiliateScopingTest extends TestCase
         $this->assertStringNotContainsString('&ldquo;', $html);
     }
 
+    public function test_new_member_can_register_to_an_affiliate_and_is_visible_to_its_admin(): void
+    {
+        $this->get('/admin/register')->assertOk()->assertSee('Affiliate');
+
+        Livewire::test(\App\Filament\Pages\Auth\Register::class)
+            ->fillForm([
+                'name' => 'Tendai Moyo',
+                'email' => 'tendai@example.test',
+                'phone' => '0771234567',
+                'affiliate_id' => $this->a->id,
+                'password' => 'password123',
+                'passwordConfirmation' => 'password123',
+            ])
+            ->call('register')
+            ->assertHasNoFormErrors();
+
+        $new = User::where('email', 'tendai@example.test')->firstOrFail();
+        $this->assertSame($this->a->id, $new->affiliate_id);
+        $this->assertTrue($new->hasRole('affiliate_user'));
+
+        $admin = $this->member('affiliate_admin', $this->a);
+        $otherAdmin = $this->member('affiliate_admin', $this->b);
+        Livewire::actingAs($admin)->test(ListUsers::class)->assertCanSeeTableRecords([$new]);
+        Livewire::actingAs($otherAdmin)->test(ListUsers::class)->assertCanNotSeeTableRecords([$new]);
+    }
+
     public function test_every_role_can_open_the_panel_but_plain_accounts_cannot(): void
     {
         foreach (['national_admin', 'national_user'] as $role) {
