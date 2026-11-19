@@ -4,6 +4,7 @@ namespace App\Filament\Pages\Auth;
 
 use App\Models\Affiliate;
 use App\Models\User;
+use App\Support\Alerts;
 use Filament\Auth\Pages\Register as BaseRegister;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -38,6 +39,7 @@ class Register extends BaseRegister
         /** @var User $user */
         $user = parent::handleRegistration($data);
         $user->assignRole('affiliate_user');
+        Alerts::memberJoined($user);
 
         return $user;
     }

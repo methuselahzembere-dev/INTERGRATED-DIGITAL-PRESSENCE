@@ -40,7 +40,7 @@ class EventsTable
                         default => 'success',
                     }),
                 TextColumn::make('registrations_count')
-                    ->label('RSVPs')
+                    ->label('Attending')
                     ->counts(['registrations' => fn ($query) => $query->where('status', 'confirmed')]),
             ])
             ->defaultSort('starts_at', 'desc')
@@ -52,7 +52,7 @@ class EventsTable
             ])
             ->recordActions([
                 Action::make('rsvp')
-                    ->label('RSVP')
+                    ->label("I'm attending")
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->visible(fn (Event $record): bool => $record->canBeRsvpedBy(auth()->user()) && ! $record->isAttendedBy(auth()->user()))
@@ -65,7 +65,7 @@ class EventsTable
                         Notification::make()->title('Attendance confirmed')->success()->send();
                     }),
                 Action::make('cancelRsvp')
-                    ->label('Cancel RSVP')
+                    ->label('Cancel attendance')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
@@ -75,7 +75,7 @@ class EventsTable
                         EventRegistration::where('event_id', $record->id)
                             ->where('user_id', auth()->id())
                             ->update(['status' => 'cancelled']);
-                        Notification::make()->title('RSVP cancelled')->send();
+                        Notification::make()->title('Attendance cancelled')->send();
                     }),
                 ViewAction::make(),
                 EditAction::make(),

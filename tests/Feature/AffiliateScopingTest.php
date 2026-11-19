@@ -12,6 +12,7 @@ use App\Models\Event;
 use App\Models\User;
 use Database\Seeders\AffiliateSeeder;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -210,6 +211,32 @@ class AffiliateScopingTest extends TestCase
         $otherAdmin = $this->member('affiliate_admin', $this->b);
         Livewire::actingAs($admin)->test(ListUsers::class)->assertCanSeeTableRecords([$new]);
         Livewire::actingAs($otherAdmin)->test(ListUsers::class)->assertCanNotSeeTableRecords([$new]);
+    }
+
+    public function test_alerts_reach_members_on_publish_registration_and_bulk_send(): void
+    {
+        $admin = $this->member('affiliate_admin', $this->a);
+        $mine = $this->member('affiliate_user', $this->a);
+        $theirs = $this->member('affiliate_user', $this->b);
+
+        Livewire::test(\App\Filament\Pages\Auth\Register::class)
+            ->fillForm(['name' => 'New One', 'email' => 'new@example.test', 'affiliate_id' => $this->a->id,
+                'password' => 'password123', 'passwordConfirmation' => 'password123'])
+            ->call('register');
+        $this->assertSame(1, $admin->notifications()->count());
+
+        auth()->logout();
+
+        Livewire::actingAs($admin)->test(CreateEvent::class)
+            ->fillForm(['title' => 'Rally', 'starts_at' => now()->addWeek(), 'venue' => 'Town Hall', 'is_published' => true])
+            ->call('create');
+        $this->assertSame(1, $mine->notifications()->count());
+        $this->assertSame(0, $theirs->notifications()->count());
+
+        Livewire::actingAs($admin)->test(ListUsers::class)
+            ->selectTableRecords([$mine->id])
+            ->callAction(TestAction::make('sendAlert')->table()->bulk(), ['title' => 'Hello', 'body' => 'Meeting']);
+        $this->assertSame(2, $mine->notifications()->count());
     }
 
     public function test_every_role_can_open_the_panel_but_plain_accounts_cannot(): void

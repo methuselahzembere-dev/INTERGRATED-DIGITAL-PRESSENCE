@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Events\Pages;
 
 use App\Filament\Resources\Events\EventResource;
 use App\Filament\Resources\Events\Schemas\EventForm;
+use App\Support\Alerts;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateEvent extends CreateRecord
@@ -16,5 +17,12 @@ class CreateEvent extends CreateRecord
         $data['created_by'] = auth()->id();
 
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        if ($this->record->isPublished()) {
+            Alerts::eventPublished($this->record);
+        }
     }
 }
